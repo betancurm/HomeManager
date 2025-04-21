@@ -11,6 +11,7 @@ public class Expense
     public Guid CategoryId { get; private set; }
     public Category Category { get; private set; }
 
+    private Expense() { }
 
     public Expense(decimal amount, DateTime date, string description, Guid userId, Category category)
     {

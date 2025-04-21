@@ -11,26 +11,24 @@ public class Income
     public Guid UserId { get; private set; }
     public Guid CategoryId { get; private set; }
     public Category Category { get; private set; }
+    private Income() { }
 
-    public Income(decimal amount, DateTime date, string description, Guid userId, Category category)
+    public Income(decimal amount, DateTime date, string description, Guid userId, Category? category)
     {
         if (amount <= 0)
         {
             throw new MontoInvalidoException(amount);
         }
-        if (Category == null)
+        if (category == null)
         {
-            throw new ArgumentNullException(nameof(Category), "La categoría no puede ser nula.");
+            throw new ArgumentNullException(nameof(category));
         }
         Id = Guid.NewGuid();
         Amount = amount;
         Date = date;
         Description = description;
-        UserId = UserId;
-        Category = Category;
+        UserId = userId;
+        Category = category;
         CategoryId = category.Id;
     }
-
-
-
 }

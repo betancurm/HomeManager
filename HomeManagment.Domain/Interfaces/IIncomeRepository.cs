@@ -7,4 +7,7 @@ public interface IIncomeRepository
     Task AddAsync(Income income);
     void Update(Income income);
     void Delete(Income income);
+
+    //Task<IEnumerable<Income>> GetByUserIdAsync(Guid userId);
+    //Task<IEnumerable<Income>> GetByCategoryIdAsync(Guid categoryId);
 }
