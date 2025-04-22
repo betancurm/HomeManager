@@ -2,6 +2,7 @@
 using HomeManagment.Domain.Interfaces;
 using HomeManagment.Domain.Entities;
 using HomeManagment.Application.DTOs.Incomes;
+using System.Security.AccessControl;
 
 namespace HomeManagment.Application.Services;
 
@@ -9,10 +10,12 @@ public class IncomeService : IIncomeService
 {
     private readonly IIncomeRepository _incomeRepository;
     private readonly ICategoryRepository _categoryRepository;
-    public IncomeService(IIncomeRepository incomeRepository, ICategoryRepository categoryRepository)
+    private readonly ICurrentUserService _currentUserService;
+    public IncomeService(IIncomeRepository incomeRepository, ICategoryRepository categoryRepository, ICurrentUserService currentUserService)
     {
         _incomeRepository = incomeRepository;
         _categoryRepository = categoryRepository;
+        _currentUserService = currentUserService;
     }
     public IEnumerable<GetIncomeDto> GetIncomesAsync()
     {
@@ -23,7 +26,6 @@ public class IncomeService : IIncomeService
             Amount = i.Amount,
             Date = i.Date,
             Description = i.Description,
-            UserId = i.UserId,
             CategoryId = i.CategoryId,
             CategoryName = i.Category.Name
         });
@@ -31,11 +33,11 @@ public class IncomeService : IIncomeService
     public async Task<Guid> CreateIncome (CreateIncomeDto dto)
     {
         var category = await _categoryRepository.GetByIdAsync(dto.CategoryId) ?? throw new Exception("Category not found");
-
+        var userId = _currentUserService.UserId;
         var income = new Income(dto.Amount,
                                  dto.Date,
                                  dto.Description,
-                                 dto.UserId,
+                                 userId,
                                  category);
         await _incomeRepository.AddAsync(income);
         

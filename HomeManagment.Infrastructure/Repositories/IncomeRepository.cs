@@ -13,7 +13,7 @@ public class IncomeRepository : IIncomeRepository
     }
     public async Task<IEnumerable<Income>> GetAllAsync()
     {
-        return await _context.Incomes.ToListAsync();
+        return await _context.Incomes.Include(i => i.Category).ToListAsync();
     }
     public async Task<Income?> GetByIdAsync(Guid id) =>
         await _context.Incomes
