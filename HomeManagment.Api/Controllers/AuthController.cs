@@ -1,7 +1,9 @@
-﻿using HomeManagment.Application.DTOs;
+﻿using HomeManagment.Application.DTOs.Identities;
 using HomeManagment.Infrastructure.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -13,12 +15,32 @@ namespace HomeManagment.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> _userMgr;
+    private readonly RoleManager<ApplicationRole> _roleMgr;
     private readonly IConfiguration _cfg;
 
-    public AuthController(UserManager<ApplicationUser> userMgr, IConfiguration cfg)
+    public AuthController(UserManager<ApplicationUser> userMgr, RoleManager<ApplicationRole> roleManager, IConfiguration cfg)
     {
         _userMgr = userMgr;
         _cfg = cfg;
+        _roleMgr = roleManager;
+    }
+
+    [HttpPost("register")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Register([FromBody] RegisterUserDto dto)
+    {
+        // 1. Crear el usuario
+        var user = new ApplicationUser
+        {
+            UserName = dto.UserName,
+            Email = dto.Email
+        };
+
+        var result = await _userMgr.CreateAsync(user, dto.Password);
+        if (!result.Succeeded)
+            return BadRequest(result.Errors);
+
+        return StatusCode(201, new { user.Id, user.UserName, user.Email });
     }
 
     [HttpPost("login")]
@@ -57,5 +79,22 @@ public class AuthController : ControllerBase
             signingCredentials: creds
         );
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    [HttpPost("roles")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> CreateRole([FromBody] CreateRoleDto dto)
+    {
+        // 1. Verificar existencia
+        if (await _roleMgr.RoleExistsAsync(dto.RoleName))
+            return BadRequest($"El rol '{dto.RoleName}' ya existe.");
+
+        // 2. Crear
+        var role = new ApplicationRole { Name = dto.RoleName };
+        var result = await _roleMgr.CreateAsync(role);
+        if (!result.Succeeded)
+            return BadRequest(result.Errors);
+
+        return StatusCode(201, new { role.Id, role.Name });
     }
 }

@@ -1,8 +1,11 @@
 ﻿using HomeManagment.Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeManagment.Api.Controllers
 {
+    [Authorize]
+    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/[controller]")]
     public class CategoriesController : ControllerBase

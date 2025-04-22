@@ -1,4 +1,4 @@
-﻿namespace HomeManagment.Application.DTOs;
+﻿namespace HomeManagment.Application.DTOs.Identities;
 
 public class LoginDto
 {
