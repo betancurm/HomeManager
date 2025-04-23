@@ -42,6 +42,7 @@ public class AuthService
     public async Task LogoutAsync()
     {
         await _storage.RemoveItemAsync("authToken");
+        _http.DefaultRequestHeaders.Authorization = null;
         _authProvider.MarkUserAsLoggedOut();
     }
 }

@@ -1,0 +1,64 @@
+﻿@page "/income"
+
+@using HomeManagment.Client.Interfaces
+@using HomeManagment.Client.Models.Income
+@using Microsoft.AspNetCore.Authorization
+@using System.Reflection
+@inject ILogger<GetIncomes> Logger
+@inject IIncomeService IncomeService
+@attribute [Authorize]
+<MudSimpleTable Style="overflow-x: auto;">
+    <thead>
+        <tr>
+            @foreach (var p in _props)
+            {
+                <th>@p.Name</th>
+            }
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (incomes is not null)
+        {
+            @foreach (var inc in incomes)
+            {
+                <tr>
+                    @foreach (var p in _props)
+                    {
+                        object? value = p.GetValue(inc);
+
+                        <td>
+                            @switch (value)
+                            {
+                                case decimal d:
+                                    @d.ToString("C")
+                                    ; break;
+                                case DateTime dt:
+                                    @dt.ToString("yyyy-MM-dd")
+                                    ; break;
+                                default:
+                                    @value
+                                    break;
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        }
+    </tbody>
+</MudSimpleTable>
+
+
+@code {
+    private List<GetIncomeRequest>? incomes;
+    private readonly PropertyInfo[] _props = typeof(GetIncomeRequest).GetProperties();
+
+    protected override async Task OnInitializedAsync()
+    {
+        incomes = await GetAllIncomes();
+    }
+    private async Task<List<GetIncomeRequest>> GetAllIncomes()
+    {
+        return await IncomeService.Get();
+    }
+}

@@ -1,22 +1,25 @@
-﻿@using Microsoft.AspNetCore.Authorization
+﻿@using HomeManagment.Client.Services
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization;
-@using HomeManagment.Client.Pages.Identity;
+
+@using HomeManagment.Client.Pages.Identities;
+@inject NavigationManager NavigationManager;
+@inject AuthService AuthService;
 @inherits LayoutComponentBase
 @attribute [Authorize]          
 
-<MudThemeProvider />
+<MudThemeProvider Theme="HomeManagmentTheme.Instance" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
         <MudLayout>
-            <MudAppBar Elevation="1">
+    <MudAppBar Elevation="1" Color="Color.Primary">
                 <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
                 <MudText Typo="Typo.h5" Class="ml-3">Home Managment</MudText>
                 <MudSpacer />
-                <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" Edge="Edge.End" OnClick="Logout" />
             </MudAppBar>
             <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-                @*NavMenu*@
                 <NavMenu>
 
                 </NavMenu>
@@ -33,5 +36,11 @@
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    private async Task Logout()
+    {
+        await AuthService.LogoutAsync();
+        NavigationManager.NavigateTo("/login", forceLoad: true);
     }
 }

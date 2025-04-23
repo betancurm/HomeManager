@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using HomeManagment.Client.Services;
 using MudBlazor.Services;
 using MudBlazor;
+using HomeManagment.Client.Interfaces;
 
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -25,7 +26,7 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
 
 builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<IncomeService>();
+builder.Services.AddScoped<IIncomeService, IncomeService>();
 builder.Services.AddScoped<CategoryService>();
 
 await builder.Build().RunAsync();
