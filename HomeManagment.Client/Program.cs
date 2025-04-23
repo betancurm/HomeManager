@@ -6,16 +6,18 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using HomeManagment.Client.Services;
 using MudBlazor.Services;
-using Microsoft.Extensions.Options;
 using MudBlazor;
 
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
+
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddMudServices(options => { options.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopRight; }
 );
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+var HomeManagmentApi = builder.Configuration.GetValue<string>("HomeManagment.Api");
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(HomeManagmentApi) });
 
 // 2. LocalStorage y auth
 builder.Services.AddBlazoredLocalStorage();

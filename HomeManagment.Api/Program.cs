@@ -11,6 +11,15 @@ using HomeManagment.Application.Interfaces;
 using HomeManagment.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyCorsPolicy", policy =>
+    {
+        policy.WithOrigins("https://localhost:7104")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 // 1. Servicios de aplicación (si hiciste un paquete de extensión)
 builder.Services.AddApplication();            // opcional
@@ -96,6 +105,7 @@ using (var scope = app.Services.CreateScope())
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
+app.UseCors("MyCorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();                         // API

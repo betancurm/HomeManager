@@ -1,0 +1,60 @@
+﻿@page "/login"
+@attribute [AllowAnonymous]
+@layout LoginLayout
+
+@using Microsoft.AspNetCore.Authorization
+@using System.ComponentModel.DataAnnotations
+@using HomeManagment.Client.Models.Auth
+@using HomeManagment.Client.Services
+@inject ILogger<Login> Logger
+@inject AuthService AuthService;
+@inject NavigationManager NavigationManager;
+@inject IJSRuntime JSRumtime;
+
+
+<EditForm Model="@_model" OnValidSubmit="HandleLogin">
+
+<DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    
+                    <MudTextField Label="User name" Class="mt-3"
+                    @bind-Value="_model.Username" Required  For="@(() => _model.Username)" />
+                    <MudTextField Label="Password" HelperText="" Class="mt-3"
+                    @bind-Value="_model.Password" For="@(() => _model.Password)" InputType="InputType.Password" />
+                    
+                </MudCardContent>
+                <MudCardActions >
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Login</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        
+    </MudGrid>
+        <MudGrid>
+
+    <MudItem>
+        <MudText Typo="Typo.body2" Align="Align.Center">
+            Fill out the form correctly to see the success message.
+        </MudText>
+    </MudItem>
+    </MudGrid>
+
+</EditForm>
+
+@code {
+
+    private LoginRequest _model = new();
+
+    private async Task HandleLogin()
+    {
+        var ok = await AuthService.LoginAsync(_model);
+        if (ok)
+        {
+            NavigationManager.NavigateTo("/"); 
+        }
+        else {/* mostrar error */}
+    }
+}

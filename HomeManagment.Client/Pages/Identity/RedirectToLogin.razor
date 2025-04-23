@@ -1,0 +1,10 @@
+﻿@inject NavigationManager NavigationManager
+
+@code {
+    protected override void OnInitialized()
+    {
+        // forzamos recarga completa (true) o simple navegación (false)
+        NavigationManager.NavigateTo("/login", false);
+    }
+}
+
