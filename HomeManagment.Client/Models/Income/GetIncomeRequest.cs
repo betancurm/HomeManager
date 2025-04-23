@@ -1,8 +1,7 @@
-﻿namespace HomeManagment.Application.DTOs.Incomes;
+﻿namespace HomeManagment.Client.Models.Income;
 
-public class GetIncomeDto
+public class GetIncomeRequest
 {
-    public Guid Id { get; set; }
     public decimal Amount { get; set; }
     public DateTime Date { get; set; }
     public string Description { get; set; } = string.Empty;
