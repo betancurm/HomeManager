@@ -4,6 +4,7 @@ using HomeManagment.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HomeManagment.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(HomeManagmentDbContext))]
-    partial class HomeManagmentDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250602190038_LinkIncomesToUsers2")]
+    partial class LinkIncomesToUsers2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,8 +67,6 @@ namespace HomeManagment.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("CategoryId");
 
@@ -302,12 +303,6 @@ namespace HomeManagment.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("HomeManagment.Domain.Entities.Expense", b =>
                 {
-                    b.HasOne("HomeManagment.Infrastructure.Identity.ApplicationUser", null)
-                        .WithMany("Expenses")
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("HomeManagment.Domain.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
@@ -387,8 +382,6 @@ namespace HomeManagment.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("HomeManagment.Infrastructure.Identity.ApplicationUser", b =>
                 {
-                    b.Navigation("Expenses");
-
                     b.Navigation("Incomes");
                 });
 #pragma warning restore 612, 618

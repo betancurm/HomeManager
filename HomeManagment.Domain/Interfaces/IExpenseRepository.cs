@@ -6,6 +6,6 @@ public interface IExpenseRepository
     Task<Expense> GetByIdAsync(Guid id);
     Task<IEnumerable<Expense>> GetAllAsync();
     Task AddAsync(Expense expense);
-    void Update(Expense expense);
-    void Delete(Expense expense);
+    Task Update(Expense expense);
+    Task Delete(Expense expense);
 }

@@ -24,7 +24,7 @@ namespace HomeManagment.Infrastructure.DependencyInjection
 
             // Repositorios
             services.AddScoped<IIncomeRepository, IncomeRepository>();
-            //services.AddScoped<IExpenseRepository, ExpenseRepository>();
+            services.AddScoped<IExpenseRepository, ExpenseRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             return services;

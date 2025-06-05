@@ -1,27 +1,28 @@
-﻿using HomeManagment.Application.DTOs.Incomes;
+using HomeManagment.Application.DTOs.Expenses;
 using HomeManagment.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace HomeManagment.Api.Controllers;
 
-
 [Authorize]                     
 [Route("api/[controller]")]
-public class IncomeController : ControllerBase
+public class ExpenseController : ControllerBase
 {
-    private readonly IIncomeService _incomeService;
-    public IncomeController(IIncomeService incomeService)
+    private readonly IExpenseService _expenseService;
+    public ExpenseController(IExpenseService expenseService)
     {
-        _incomeService = incomeService;
+        _expenseService = expenseService;
     }
+
     [HttpGet]
-    public IActionResult GetIncomes()
+    public IActionResult GetExpenses()
     {
-        var incomes = _incomeService.GetIncomesAsync();
-        return Ok(incomes);
+        var expenses = _expenseService.GetExpensesAsync();
+        return Ok(expenses);
     }
+
     [HttpPost]
-    public async Task<IActionResult> CreateIncome([FromBody] CreateIncomeDto dto)
+    public async Task<IActionResult> RegisterExpense([FromBody] ExpenseDto dto)
     {
         if (!ModelState.IsValid)
         {
@@ -29,16 +30,17 @@ public class IncomeController : ControllerBase
         }
         try
         {
-            var incomeId = await _incomeService.CreateIncome(dto);
-            return CreatedAtAction(nameof(GetIncomes), new { id = incomeId }, dto);
+            var expenseId = await _expenseService.RegisterExpense(dto);
+            return CreatedAtAction(nameof(GetExpenses), new { id = expenseId }, dto);
         }
         catch (Exception ex)
         {
             return BadRequest(new { error = ex.Message });
         }
     }
+
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateIncome(Guid id, [FromBody] UpdateIncomeDto dto)
+    public async Task<IActionResult> UpdateExpense(Guid id, [FromBody] UpdateExpenseDto dto)
     {
         if (!ModelState.IsValid)
         {
@@ -47,7 +49,7 @@ public class IncomeController : ControllerBase
 
         try
         {
-            await _incomeService.UpdateIncome(id, dto);
+            await _expenseService.UpdateExpense(id, dto);
             return NoContent();
         }
         catch (Exception ex)
@@ -55,13 +57,13 @@ public class IncomeController : ControllerBase
             return BadRequest(new { error = ex.Message });
         }
     }
+
     [HttpDelete("{id}")]
-    
-    public async Task<IActionResult> DeleteIncome(Guid id)
+    public async Task<IActionResult> DeleteExpense(Guid id)
     {
         try
         {
-            await _incomeService.DeleteIncome(id);
+            await _expenseService.DeleteExpense(id);
             return NoContent();
         }
         catch (Exception ex)
@@ -69,4 +71,4 @@ public class IncomeController : ControllerBase
             return BadRequest(new { error = ex.Message });
         }
     }
-}
+} 

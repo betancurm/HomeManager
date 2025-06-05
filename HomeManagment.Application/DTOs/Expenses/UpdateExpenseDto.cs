@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace HomeManagment.Application.DTOs.Incomes;
+namespace HomeManagment.Application.DTOs.Expenses;
 
-public class UpdateIncomeDto
+public class UpdateExpenseDto
 {
     [Required]
     [Range(0.01, double.MaxValue, ErrorMessage = "El monto debe ser mayor a 0")]
@@ -16,4 +16,4 @@ public class UpdateIncomeDto
     
     [Required]
     public Guid CategoryId { get; set; }
-}
+} 

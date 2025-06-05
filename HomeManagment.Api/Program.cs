@@ -16,12 +16,13 @@ builder.Services.AddCors(options =>
     options.AddPolicy("MyCorsPolicy", policy =>
     {
         policy.WithOrigins("https://localhost:7104")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+            .AllowAnyHeader()    // Permitir todas las cabeceras
+            .AllowAnyMethod()    // Permitir todos los mÃ©todos
+            .AllowCredentials();
     });
 });
 
-// 1. Servicios de aplicación (si hiciste un paquete de extensión)
+// 1. Servicios de aplicaciÃ³n (si hiciste un paquete de extensiÃ³n)
 builder.Services.AddApplication();            // opcional
 
 // 2. Servicios de infraestructura (DbContext, Identity, repos, etc.)
@@ -62,7 +63,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Ingresa ‘Bearer {token}’"
+        Description = "Ingresa Bearer {token}"
     });
 
     // Aplica el esquema a todos los endpoints
@@ -88,7 +89,7 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<HomeManagmentDbContext>();
 
-    // Solo agrega si está vacía
+    // Solo agrega si estÃ¡ vacÃ­a
     if (!context.Categories.Any())
     {
         context.Categories.Add(new Category("Salario", "Ingresos por salario mensual"));

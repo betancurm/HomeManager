@@ -2,7 +2,6 @@
 using HomeManagment.Domain.Interfaces;
 using HomeManagment.Domain.Entities;
 using HomeManagment.Application.DTOs.Incomes;
-using System.Security.AccessControl;
 
 namespace HomeManagment.Application.Services;
 
@@ -30,19 +29,43 @@ public class IncomeService : IIncomeService
             CategoryName = i.Category.Name
         });
     }
-    public async Task<Guid> CreateIncome (CreateIncomeDto dto)
+    public async Task<Guid> CreateIncome(CreateIncomeDto dto)
     {
         var category = await _categoryRepository.GetByIdAsync(dto.CategoryId) ?? throw new Exception("Category not found");
-        var userId = _currentUserService.UserId;
+        var applicationUserId = _currentUserService.ApplicationUserId;
         var income = new Income(dto.Amount,
                                  dto.Date,
                                  dto.Description,
-                                 userId,
+                                 applicationUserId,
                                  category);
         await _incomeRepository.AddAsync(income);
         
         return income.Id;
     }
 
+    public async Task UpdateIncome(Guid id, UpdateIncomeDto dto)
+    {
+        var income = await _incomeRepository.GetByIdAsync(id) ?? throw new Exception("Income not found");
+        var category = await _categoryRepository.GetByIdAsync(dto.CategoryId) ?? throw new Exception("Category not found");
+        
+        if (income.ApplicationUserId != _currentUserService.ApplicationUserId)
+        {
+            throw new UnauthorizedAccessException("No tienes permiso para actualizar este ingreso");
+        }
 
+        income.Update(dto.Amount, dto.Date, dto.Description, category);
+        await _incomeRepository.Update(income);
+    }
+
+    public async Task DeleteIncome(Guid id)
+    {
+        var income = await _incomeRepository.GetByIdAsync(id) ?? throw new Exception("Income not found");
+        
+        if (income.ApplicationUserId != _currentUserService.ApplicationUserId)
+        {
+            throw new UnauthorizedAccessException("No tienes permiso para eliminar este ingreso");
+        }
+
+        await _incomeRepository.Delete(income);
+    }
 }

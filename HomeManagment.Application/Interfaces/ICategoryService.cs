@@ -3,5 +3,5 @@ namespace HomeManagment.Application.Interfaces;
 
 public interface ICategoryService
 {
-    Task<Guid> RegisterCategory(CategoryDto categoryDto);
+    IEnumerable<CategoryDto> GetCategoriesAsync();
 }

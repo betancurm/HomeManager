@@ -26,8 +26,15 @@ public class IncomeRepository : IIncomeRepository
         await _context.SaveChangesAsync();
     }
 
+    public async Task Update(Income income)
+    {
+        _context.Incomes.Update(income);
+        await _context.SaveChangesAsync();
+    }
 
-    public void Update(Income income) => _context.Incomes.Update(income);
-    public void Delete(Income income) => _context.Incomes.Remove(income);
-
+    public async Task Delete(Income income)
+    {
+        _context.Incomes.Remove(income);
+        await _context.SaveChangesAsync();
+    }
 }
